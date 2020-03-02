@@ -14,7 +14,13 @@
     "react-native": "0.61.5",
     "react-native-get-location": "^1.4.2",
     "react-native-image-crop-picker": "^0.28.0",
-    "react-native-maps": "0.26.1"
+    "react-native-maps": "0.26.1",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-logger": "^3.0.6",
+    "redux-promise-middleware": "^6.1.2",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

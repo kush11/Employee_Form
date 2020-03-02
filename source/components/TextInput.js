@@ -8,11 +8,11 @@ const CustomTextInput = ({
   keyboardType = 'default',
 }) => {
   const [get, set] = useState();
-  checkNumber = number => {
+  const checkNumber = number => {
     const pattern = /^\d{10}$/;
     return pattern.test(number);
   };
-  checkEmail = email => {
+  const checkEmail = email => {
     const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return pattern.test(email);
   };
@@ -25,7 +25,9 @@ const CustomTextInput = ({
       checkNumber(get)
         ? onNext(placeholder, get)
         : alert(`${placeholder} field data is not valid`);
-    } else onNext(placeholder, get);
+    } else {
+      onNext(placeholder, get);
+    }
   };
   return (
     <View style={{flex: 1, top: '30%'}}>
