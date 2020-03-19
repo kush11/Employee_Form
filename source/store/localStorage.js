@@ -15,7 +15,7 @@ export const saveUserInfo = async userInfo => {
     await AsyncStorage.setItem('userMobile', userInfo.userMobile);
 
     AsyncStorage.removeItem('userLocation');
-    await AsyncStorage.setItem('userLocation', userInfo.userLocation);
+    await AsyncStorage.setItem('userLocation', JSON.stringify(userInfo.userLocation));
 
     AsyncStorage.removeItem('userAddress');
     await AsyncStorage.setItem('userAddress', userInfo.userAddress);
@@ -32,7 +32,7 @@ export const getUserName = async () => {
 };
 
 export const getUserImage = async () => {
-  const userImage = await AsyncStorage.getItem('userImage');
+  const userImage = await AsyncStorage.getItem('userImgUrl');
   return userImage;
 };
 
@@ -56,17 +56,17 @@ export const getUserAddress = async () => {
   return userAddress;
 };
 
-export const getUserDetails = async () => {
+export const getUserDetails =  async () => {
   const userData = {
-    userName: getUserName(),
-    userEmail: getUserEmail(),
-    userMobile: getUserPhone(),
-    userImage: getUserImage(),
-    userLocation: getUserLocation(),
-    userAddress: getUserAddress(),
+    userName: await getUserName(),
+    userEmail: await getUserEmail(),
+    userMobile: await getUserPhone(),
+    userImage: await getUserImage(),
+    userLocation: await getUserLocation(),
+    userAddress: await getUserAddress(),
   };
-  let res = userData.map(data => {
-    if (data.value === '') return false;
-  });
+  // let res = await userData.map(data => {
+  //   if (data === '') return false;
+  // });
   return userData;
 };

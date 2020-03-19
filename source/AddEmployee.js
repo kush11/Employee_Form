@@ -36,6 +36,20 @@ const mapDispatchToProps = dispatch => ({
   updateState: () => dispatch(resetState()),
 });
 class AddEmployee extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      localdata: {},
+    };
+  }
+  async componentDidMount() {
+    // console.log('dadaada',getUserName((dad)=>console.log(dad)))
+    let localdata = await getUserDetails();
+    this.setState({localdata})
+    console.log('sasa', localdata);
+    // console.log('getUserDetails',getUserDetails((data)=>console.log(data.userLocation)))
+  }
+
   callImagePicker = mode => {
     const {updateImage} = this.props;
     if (mode === 'Camera') {
@@ -50,6 +64,7 @@ class AddEmployee extends PureComponent {
         includeExif: true,
         avoidEmptySpaceAroundImage: true,
       }).then(image => {
+        console.log('image',image)
         updateImage(image.path);
       });
     } else {
@@ -64,6 +79,7 @@ class AddEmployee extends PureComponent {
         includeExif: true,
         avoidEmptySpaceAroundImage: true,
       }).then(image => {
+        console.log('image',image)
         updateImage(image.path);
       });
     }
@@ -104,6 +120,7 @@ class AddEmployee extends PureComponent {
       await updateMobile(data);
     } else if (placeholder === 'Enter address') {
       await updateAddress(data);
+      await this.saveUser();
     }
   };
 
@@ -125,10 +142,10 @@ class AddEmployee extends PureComponent {
   };
 
   initCheck = () => {
-    let dd = getUserDetails()
-    console.log('dsdsds',dd)
-    if(getUserDetails())return true
-    else return false
+    let dd = getUserDetails();
+    console.log('dsdsds', dd);
+    if (getUserDetails()) return true;
+    else return false;
   };
 
   renderImage = () => {
@@ -237,23 +254,24 @@ class AddEmployee extends PureComponent {
       userImgUrl,
       userLocation,
     } = this.props;
-    this.saveUser();
+    // this.saveUser();
+    const {localdata} = this.state;
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <Image
-          source={{uri: userImgUrl}}
+          source={{uri: localdata.userImage}}
           style={{
             height: 140,
             width: 140,
             borderRadius: 280,
           }}
         />
-        <Text>User Name: {userName}</Text>
-        <Text>User Email : {userEmail}</Text>
-        <Text>Phone Number : {userMobile}</Text>
-        <Text>Address : {userAddress}</Text>
-        <Text>Latitude : {userLocation.latitude}</Text>
-        <Text>Longitude : {userLocation.longitude}</Text>
+        <Text>User Name: {localdata.userName}</Text>
+        <Text>User Email : {localdata.userEmail}</Text>
+        <Text>Phone Number : {localdata.userMobile}</Text>
+        <Text>Address : {localdata.userAddress}</Text>
+        <Text>Latitude : {JSON.parse(localdata.userLocation).latitude}</Text>
+        <Text>Longitude : {JSON.parse(localdata.userLocation).longitude}</Text>
       </View>
     );
   };
@@ -358,7 +376,6 @@ class AddEmployee extends PureComponent {
                 borderRadius: 280,
               }}
             />
-            {this.saveUser}
             <Text>User Name: {userName}</Text>
             <Text>User Email : {userEmail}</Text>
             <Text>Phone Number : {userMobile}</Text>
@@ -380,7 +397,8 @@ class AddEmployee extends PureComponent {
       userLocation,
     } = this.props;
 
-    return false ? this.finalView() : this.renderView();
+
+    return this.state.localdata.userName ? this.finalView() : this.renderView();
   }
 }
 
