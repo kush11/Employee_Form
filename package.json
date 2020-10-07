@@ -8,15 +8,17 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "run" : "npx react-native run-android",
-    "clean" : "cd android &&  ./gradlew clean && cd .."
+    "run": "npx react-native run-android",
+    "clean": "cd android &&  ./gradlew clean && cd .."
   },
   "dependencies": {
-    "react": "16.9.0",
-    "react-native": "0.61.5",
+    "react": "16.13.1",
+    "react-native": "0.63.3",
+    "react-native-activity-rings": "^1.1.2",
     "react-native-get-location": "^1.4.2",
     "react-native-image-crop-picker": "^0.28.0",
     "react-native-maps": "0.26.1",
+    "react-native-share": "^4.0.1",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",

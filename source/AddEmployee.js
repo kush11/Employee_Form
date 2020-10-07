@@ -1,10 +1,11 @@
-import React, {PureComponent} from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import React, { PureComponent } from 'react';
+import { View, Text, TouchableOpacity, Image, } from 'react-native';
 import CustomTextInput from './components/TextInput';
 import GetLocation from 'react-native-get-location';
 import ImagePickerCrop from 'react-native-image-crop-picker';
-import {connect} from 'react-redux';
-import {saveUserInfo, getUserDetails} from './store/localStorage';
+import { connect } from 'react-redux';
+import { saveUserInfo, getUserDetails } from './store/localStorage';
+import Share from "react-native-share";
 import {
   resetState,
   updateUserAddress,
@@ -45,13 +46,13 @@ class AddEmployee extends PureComponent {
   async componentDidMount() {
     // console.log('dadaada',getUserName((dad)=>console.log(dad)))
     let localdata = await getUserDetails();
-    this.setState({localdata})
+    this.setState({ localdata })
     console.log('sasa', localdata);
     // console.log('getUserDetails',getUserDetails((data)=>console.log(data.userLocation)))
   }
 
   callImagePicker = mode => {
-    const {updateImage} = this.props;
+    const { updateImage } = this.props;
     if (mode === 'Camera') {
       ImagePickerCrop.openCamera({
         cropping: true,
@@ -64,7 +65,7 @@ class AddEmployee extends PureComponent {
         includeExif: true,
         avoidEmptySpaceAroundImage: true,
       }).then(image => {
-        console.log('image',image)
+        console.log('image', image)
         updateImage(image.path);
       });
     } else {
@@ -79,14 +80,14 @@ class AddEmployee extends PureComponent {
         includeExif: true,
         avoidEmptySpaceAroundImage: true,
       }).then(image => {
-        console.log('image',image)
+        console.log('image', image)
         updateImage(image.path);
       });
     }
   };
 
   getLocation() {
-    const {updateLocation} = this.props;
+    const { updateLocation } = this.props;
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 15000,
@@ -96,7 +97,7 @@ class AddEmployee extends PureComponent {
         updateLocation(location);
       })
       .catch(error => {
-        const {code, message} = error;
+        const { code, message } = error;
         console.warn(code, message);
       });
   }
@@ -125,14 +126,14 @@ class AddEmployee extends PureComponent {
   };
 
   renderName = () => {
-    const {userName} = this.props;
+    const { userName } = this.props;
     let returnData = false;
     if (userName === '') returnData = true;
     return returnData;
   };
 
   renderEmail = () => {
-    const {userName, userEmail} = this.props;
+    const { userName, userEmail } = this.props;
     if (userName !== '') {
       if (userEmail === '') {
         return true;
@@ -149,7 +150,7 @@ class AddEmployee extends PureComponent {
   };
 
   renderImage = () => {
-    const {userEmail, userImgUrl} = this.props;
+    const { userEmail, userImgUrl } = this.props;
     if (userEmail !== '') {
       if (userImgUrl === '') return true;
       else return false;
@@ -158,7 +159,7 @@ class AddEmployee extends PureComponent {
   };
 
   renderPhone = () => {
-    const {userImgUrl, userMobile} = this.props;
+    const { userImgUrl, userMobile } = this.props;
     if (userImgUrl !== '') {
       if (userMobile === '') return true;
       else return false;
@@ -208,7 +209,7 @@ class AddEmployee extends PureComponent {
           onPress={() => this.callImagePicker('Camera')}>
           <Text>Camera</Text>
         </TouchableOpacity>
-        <View style={{flex: 0.2}} />
+        <View style={{ flex: 0.2 }} />
         <TouchableOpacity
           onPress={() => this.callImagePicker('Gallary')}
           style={{
@@ -245,6 +246,27 @@ class AddEmployee extends PureComponent {
     await saveUserInfo(userInfo);
   };
 
+  shareFun = async () => {
+    const { localdata } = this.state;
+    const shareOption = {
+      title: 'Share via',
+      messages: 'some messagdsdsde',
+      urls: [localdata.userImage, localdata.userImage, localdata.userImage],
+      // url: localdata.userImage,
+      social: Share.Social.WHATSAPP,
+      whatsAppNumber: "910000000000",  // country code + phone number
+      filename: 'tesdsdst',
+    }
+    try {
+      // const shareResponse = await Share.shareSingle(shareOption); // only open whatsapp
+      const shareResponse = await Share.open(shareOption); // other option also
+      console.log('shareResponse=>', shareResponse)
+
+    } catch (error) {
+      console.log('error=>', error)
+    }
+  }
+
   finalView = () => {
     const {
       userName,
@@ -255,11 +277,11 @@ class AddEmployee extends PureComponent {
       userLocation,
     } = this.props;
     // this.saveUser();
-    const {localdata} = this.state;
+    const { localdata } = this.state;
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Image
-          source={{uri: localdata.userImage}}
+          source={{ uri: localdata.userImage }}
           style={{
             height: 140,
             width: 140,
@@ -272,6 +294,18 @@ class AddEmployee extends PureComponent {
         <Text>Address : {localdata.userAddress}</Text>
         <Text>Latitude : {JSON.parse(localdata.userLocation).latitude}</Text>
         <Text>Longitude : {JSON.parse(localdata.userLocation).longitude}</Text>
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 50,
+            width: 150,
+            borderWidth: 1,
+            borderRadius: 10,
+          }}
+          onPress={() => this.shareFun()}>
+          <Text>Share WhatsApp</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -286,7 +320,7 @@ class AddEmployee extends PureComponent {
       userLocation,
     } = this.props;
     return (
-      <View style={{flex: 1, backgroundColor: 'white'}}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
         {this.renderName() ? (
           <CustomTextInput placeholder={'Enter name'} onNext={this.onNext} />
         ) : null}
@@ -306,7 +340,7 @@ class AddEmployee extends PureComponent {
                 alignItems: 'center',
               }}>
               <Image
-                source={{uri: userImgUrl}}
+                source={{ uri: userImgUrl }}
                 style={{
                   height: 140,
                   width: 140,
@@ -367,9 +401,9 @@ class AddEmployee extends PureComponent {
           : null}
         {userAddress !== '' ? (
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Image
-              source={{uri: userImgUrl}}
+              source={{ uri: userImgUrl }}
               style={{
                 height: 140,
                 width: 140,
@@ -382,6 +416,18 @@ class AddEmployee extends PureComponent {
             <Text>Address : {userAddress}</Text>
             <Text>Latitude : {userLocation.latitude}</Text>
             <Text>Longitude : {userLocation.longitude}</Text>
+            <TouchableOpacity
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 50,
+                width: 150,
+                borderWidth: 1,
+                borderRadius: 10,
+              }}
+              onPress={() => this.callImagePicker('Camera')}>
+              <Text>Camera</Text>
+            </TouchableOpacity>
           </View>
         ) : null}
       </View>
